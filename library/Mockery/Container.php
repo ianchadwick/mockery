@@ -226,6 +226,9 @@ class Container
         $mock = $this->_getInstance($def->getClassName(), $constructorArgs);
         $mock->mockery_init($this, $config->getTargetObject());
 
+        // setup the caller trace info
+        $mock->mockery_setCaller();
+
         if (!empty($quickdefs)) {
             $mock->shouldReceive($quickdefs)->byDefault();
         }

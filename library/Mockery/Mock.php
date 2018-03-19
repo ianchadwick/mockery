@@ -73,6 +73,13 @@ class Mock implements MockInterface
     protected $_mockery_name = null;
 
     /**
+     * The mock caller info
+     *
+     * @var array|null
+     */
+    protected $_mockery_caller = null;
+
+    /**
      * Order number of allocation
      *
      * @var int
@@ -504,6 +511,43 @@ class Mock implements MockInterface
             throw $exception;
         }
         $this->mockery_setCurrentOrder($order);
+    }
+
+    /**
+     * Get the caller exception which includes the stack trace
+     *
+     * @return array|null
+     */
+    public function mockery_getCaller()
+    {
+        return $this->_mockery_caller;
+    }
+
+    /**
+     * Attempt to set the location of the caller
+     *
+     * @return $this
+     */
+    public function mockery_setCaller()
+    {
+        $exception = new \Exception();
+
+        // attempt to find the calling test name
+        $caller = [];
+        $traces = $exception->getTrace();
+        foreach ($traces as $position => $trace) {
+            if (preg_match('/^test[_A-Z]/', $trace['function'])) {
+                $caller = $trace;
+                if (! isset($caller['file']) && isset($traces[$position - 1])) {
+                    $caller['file'] = $traces[$position - 1]['file'];
+                    $caller['line'] = $traces[$position - 1]['line'];
+                }
+                break;
+            }
+        }
+
+        $this->_mockery_caller = $caller;
+        return $this;
     }
 
     /**

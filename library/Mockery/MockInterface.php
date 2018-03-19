@@ -180,6 +180,20 @@ interface MockInterface
     public function mockery_validateOrder($method, $order);
 
     /**
+     * Get the caller info
+     *
+     * @return array|null
+     */
+    public function mockery_getCaller();
+
+    /**
+     * Attempt to set the location of the caller by generating an exception and using the trace
+     *
+     * @return $this
+     */
+    public function mockery_setCaller();
+
+    /**
      * Gets the count of expectations for this mock
      *
      * @return int

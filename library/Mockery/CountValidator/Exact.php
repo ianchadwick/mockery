@@ -33,10 +33,17 @@ class Exact extends CountValidatorAbstract
     public function validate($n)
     {
         if ($this->_limit !== $n) {
+            if ($callerInfo = $this->_expectation->getMock()->mockery_getCaller()) {
+                // get the method
+                $caller = $callerInfo['class'] . $callerInfo['type'] . $callerInfo['function'] . '() on'
+                    . ' ' .$callerInfo['file'] . ':' . $callerInfo['line'];
+            }
+
             $because = $this->_expectation->getExceptionMessage();
 
             $exception = new Mockery\Exception\InvalidCountException(
-                'Method ' . (string) $this->_expectation
+                (isset($caller) ? $caller . PHP_EOL : '')
+                . 'Method ' . (string) $this->_expectation
                 . ' from ' . $this->_expectation->getMock()->mockery_getName()
                 . ' should be called' . PHP_EOL
                 . ' exactly ' . $this->_limit . ' times but called ' . $n
