@@ -45,11 +45,7 @@ trait MockeryPHPUnitIntegration
 
     protected function addMockeryExpectationsToAssertionCount()
     {
-        $container = Mockery::getContainer();
-        if ($container != null) {
-            $count = $container->mockery_getExpectationCount();
-            $this->addToAssertionCount($count);
-        }
+        $this->addToAssertionCount(Mockery::getContainer()->mockery_getExpectationCount());
     }
 
     protected function checkMockeryExceptions()
@@ -60,7 +56,7 @@ trait MockeryPHPUnitIntegration
 
         foreach (Mockery::getContainer()->mockery_thrownExceptions() as $e) {
             if (!$e->dismissed()) {
-                $this->markAsRisky('Mockery found an exception that appears to have been swallowed: '.$e->getMessage());
+                $this->markAsRisky();
             }
         }
     }

@@ -19,21 +19,36 @@
  * @license    http://github.com/padraic/mockery/blob/master/LICENSE New BSD License
  */
 
-namespace test\Mockery;
+namespace DemeterChain;
 
-use Mockery\Adapter\Phpunit\MockeryTestCase;
-
-/**
- * @requires PHP 7.1.0RC3
- */
-class MockingMethodsWithIterableTypeHintsTest extends MockeryTestCase
+class C
 {
-    /** @test */
-    public function itShouldSuccessfullyBuildTheMock()
+    public function baz(): \stdClass
     {
-        require __DIR__."/Fixtures/MethodWithIterableTypeHints.php";
-        $mock = mock("test\Mockery\Fixtures\MethodWithIterableTypeHints");
+        return new \stdClass();
+    }
+}
 
-        $this->assertInstanceOf(\test\Mockery\Fixtures\MethodWithIterableTypeHints::class, $mock);
+class B
+{
+    public function bar(): C
+    {
+        return new C();
+    }
+}
+
+class A
+{
+    public function foo(): B
+    {
+        return new B();
+    }
+}
+
+class Main
+{
+    public function callDemeter(A $a)
+    {
+        return $a->foo()->bar()->baz();
     }
 }

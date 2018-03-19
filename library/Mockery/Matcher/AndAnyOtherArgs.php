@@ -18,32 +18,28 @@
  * @license    http://github.com/padraic/mockery/blob/master/LICENSE New BSD License
  */
 
-namespace Mockery;
+namespace Mockery\Matcher;
 
-/**
- * @method \Mockery\Expectation withArgs(\Closure|array $args)
- */
-class HigherOrderMessage
+class AndAnyOtherArgs extends MatcherAbstract
 {
-    private $mock;
-    private $method;
-
-    public function __construct(MockInterface $mock, $method)
+    /**
+     * Check if the actual value matches the expected.
+     *
+     * @param mixed $actual
+     * @return bool
+     */
+    public function match(&$actual)
     {
-        $this->mock = $mock;
-        $this->method = $method;
+        return true;
     }
 
     /**
-     * @return \Mockery\Expectation
+     * Return a string representation of this Matcher
+     *
+     * @return string
      */
-    public function __call($method, $args)
+    public function __toString()
     {
-        if ($this->method === 'shouldNotHaveReceived') {
-            return $this->mock->{$this->method}($method, $args);
-        }
-
-        $expectation = $this->mock->{$this->method}($method);
-        return $expectation->withArgs($args);
+        return '<AndAnyOthers>';
     }
 }
